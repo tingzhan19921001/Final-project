@@ -9,7 +9,8 @@ TEMPLATE for your report:
 # Title: 
 
 ## Team Member(s):
-(Note: Don't put your email addresses here (which is public).  If a student wants their NAME hidden as well, due to optional FERPA regulations, they can be listed purely by their GitHub ID).
+Wenjun Ma \
+Ting Zhan
 
 # Monte Carlo Simulation Scenario & Purpose:
 

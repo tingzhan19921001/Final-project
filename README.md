@@ -26,7 +26,9 @@ Fourthly, the Expenses is a combination of fixed overhead (H) plus the total cos
 Fifthly, the conversion rate is fluenced by the marketing channels, including TV, Radio and Advertisement. The cost of a conversion (c) varies between $0.20 and $0.80.
 
 Income = C*R*S*p
+
 Expense = H + C*R*c
+
 The final model is: P = C*R*S*p - (H + C*R*c)
 
 ### Hypothesis before running the simulation:
@@ -49,7 +51,7 @@ Volume of Customer(C): Volume of Customer will vary in several situations. For e
 Profit per Sale(p): Profit per sale will be influenced by a combination of factors. For example, how the list price it set will influence the profit per sale, just like what we discussed above. Also, as what we find in the real world, the length of stay will influence the profit. For example, if he/she tends to spend more time in supermarket, he/she will spend more in one transaction.
 
 ## Instructions on how to use the program:
-
+At this point, users who run the program will input the values for the volume of customers and profit per sale. Both the values might be a range. For example, volume of customers is a range of value. 
 
 ## Sources Used:
 This is where we get our basic idea.

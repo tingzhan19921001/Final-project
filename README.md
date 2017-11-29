@@ -42,8 +42,10 @@ The final model is: P = C*R*S*p - (H + C*R*c)
 Before running the simulation, the value set above is for Non-Holiday scenario for testing our code. In the future, the value for Holiday scenario will be added.
 
 ### Simulation's variables of uncertainty
+
 The variables of uncertainty are:
 Volume of Customer(C): Volume of Customer will vary in several situations. For example, Holiday and Non-Holiday, different types of supermarket like Walmart vs Aldi.
+
 Profit per Sale(p): Profit per sale will be influenced by a combination of factors. For example, how the list price it set will influence the profit per sale, just like what we discussed above. Also, as what we find in the real world, the length of stay will influence the profit. For example, if he/she tends to spend more time in supermarket, he/she will spend more in one transaction.
 
 ## Instructions on how to use the program:

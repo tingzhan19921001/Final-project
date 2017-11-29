@@ -1,20 +1,28 @@
-Create a FORK of this repository to store your code, data, and documentation for the final project. Detailed instructions for this assignment are in the course Moodle site.  The reason I'm asking you to fork this empty repository instead of creating a stand-alone repository is that it will be much easier for me and all students in the course to find all of our projects for code review and for grading. You can even get code review from students in the other section of IS590PR this way.
-
-Even though your fork of this repository shall remain public, you'll still need to explicitly add any students on your team as Collaborators in the Settings. That way you can grant them write privileges.
-
-DELETE the lines from TEMPLATE up.
-
-TEMPLATE for your report:
 
 # Title: 
+Forecasting Daily Supermarket Profit Using Monte Carlo Simulation
 
 ## Team Member(s):
-Wenjun Ma \
+Wenjun Ma 
 Ting Zhan
 
 # Monte Carlo Simulation Scenario & Purpose:
 
+Scenario: 
+In this project, we are trying to simulate the daily profit made by a local supermarket. The supermarket we refer to are markets like Meijer or Walmart. In our daily life, we go to shopping in supermarkets at least once a week or more. Predicting the daily profit in different situations helps the supermarkets to prepare well.
+
+Here we adopt a top down method to predict daily supermarket profit. 
+First we start with: Profit = Income - Expenses. It is true that both income and expense will change on daily basis, especially holiday season vs non-holiday season. Just like the past Thanksgiving holiday and the coming Christmas holiday, the profit is tremendously from other days.
+
+Therefore, we have separated into two situations when predicting the profit: Holiday vs Non-Holiday.
+
+Secondly, as in real world, the income comes from the accumulation of each transaction. Therefore, 
+Income = Number of Sales(S) * Profit per Sale(P)
+
+
 ### Hypothesis before running the simulation:
+1. Income and Expense are independent. The calculation of income will not be influenced by expense.
+2. The profit per sale is calculated by 
 
 ### Simulation's variables of uncertainty
 List and describe your simulation's variables of uncertainty (where you're using pseudo-random number generation). 

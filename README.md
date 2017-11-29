@@ -25,7 +25,7 @@ Fourthly, the Expenses is a combination of fixed overhead (H) plus the total cos
 
 Fifthly, the conversion rate is fluenced by the marketing channels, including TV, Radio and Advertisement. The cost of a conversion (c) varies between $0.20 and $0.80.
 
-Income = C*R*S*p
+Income = C*R*p
 
 Expense = H + C*R*c
 
@@ -51,9 +51,10 @@ Volume of Customer(C): Volume of Customer will vary in several situations. For e
 Profit per Sale(p): Profit per sale will be influenced by a combination of factors. For example, how the list price it set will influence the profit per sale, just like what we discussed above. Also, as what we find in the real world, the length of stay will influence the profit. For example, if he/she tends to spend more time in supermarket, he/she will spend more in one transaction.
 
 ## Instructions on how to use the program:
-At this point, users who run the program will input the values for the volume of customers and profit per sale. Both the values might be a range. For example, volume of customers is a range of value. 
+At this point, users who run the program will input the values for the volume of customers and profit per sale. Both the values might be a range. For example, volume of customers is a range of value. The profit per sale also can change. Beacause there are two variables in the process, the profit is not easy to get the maximum value. Therefore, we use monte carlo simulation to analyze the process. Monte Carlo methods are a broad class of computational algorithms that rely on repeated random sampling to obtain numerical results. The idea of a monte carlo simulation is to test various outcome possibilities. In reality, only one of the outcome possibilities will play out, but, in terms of risk assessment, any of the possibilities could have occurred. We want to get the volume of customer and profit per sale when the profit get maximum value, so we need large number of values and run it randomly, and we can get the values we need.
 
 ## Sources Used:
 This is where we get our basic idea.
+https://www.vertex42.com/ExcelArticles/mc/SalesForecast.html
 https://www.vertex42.com/ExcelArticles/mc/SalesForecast.html
 

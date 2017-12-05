@@ -1,0 +1,68 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy.interpolate import *
+from sklearn import datasets, linear_model
+from sklearn.metrics import mean_squared_error, r2_score
+
+def PopulationbyAge(self):
+    """
+    This function aims to get the population in specific area.
+    The source is : https://suburbanstats.org/population/illinois/how-many-people-live-in-champaign
+    The percentage distribution by age: https://www.statista.com/statistics/748601/walmartcom-us-shopping-frequency-by-age/
+
+    :return:
+    """
+
+def getConversionRate():
+
+    df = pd.read_csv('test.csv')
+    years = np.array(df['Year'])
+    #total_row = float(str(df.axes[0]))
+    #print(type(total_row))
+
+    years_to_num = np.arange(1,20)
+
+    print(years_to_num)
+
+    population = np.array(df['Population'])
+    p1 = np.polyfit(years_to_num, population,1)
+    print('The conversion rate is: ', p1[0])
+    plt.plot(years_to_num,population,'o')
+    plt.plot(years_to_num, np.polyval(p1,years_to_num))
+    plt.show()
+
+    #print(population)
+
+getConversionRate()
+
+class Income():
+    """
+    Income = Number of Sales(S) * Profit per Sale(p)
+
+    """
+
+    def __init__(self,number_of_sale, profit_per_sale):
+
+        self.number_of_sale = number_of_sale
+        self.profit_per_sale = profit_per_sale
+
+    def NumberSale(self,customer_volume, ConversionRate):
+        """
+
+        :return:
+        """
+        number_of_sale = customer_volume * ConversionRate
+        return number_of_sale
+
+
+    def ProfitperSale(self,cost_of_goodsold):
+        """
+        :return:
+
+        >>> Income.ProfitperSale(Income, 200)
+        60.0
+        """
+        profit_per_sale = 0.3 * cost_of_goodsold
+        return profit_per_sale
+

@@ -1,9 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.interpolate import *
-from sklearn import datasets, linear_model
-from sklearn.metrics import mean_squared_error, r2_score
+
 
 def PopulationbyAge(self):
     """
@@ -13,28 +11,60 @@ def PopulationbyAge(self):
 
     :return:
     """
+def ReadcsvTodf(input_file):
 
-def getConversionRate():
+    #input_file = input('Give me a file')
+    df = pd.read_csv(input_file)
 
-    df = pd.read_csv('test.csv')
     years = np.array(df['Year'])
-    #total_row = float(str(df.axes[0]))
-    #print(type(total_row))
+    list_years = list(df.axes[0])
+    total_rows = len(list_years)
+    #print(total_rows)
+    return df,total_rows
+#ReadcsvTodf()
+
+def NumberofPeopleShopWalmart():
+
+    df, total_rows = ReadcsvTodf('test.csv')
+    print(df)
+    print(total_rows)
 
     years_to_num = np.arange(1,20)
 
     print(years_to_num)
 
     population = np.array(df['Population'])
+
     p1 = np.polyfit(years_to_num, population,1)
-    print('The conversion rate is: ', p1[0])
+    p2 = np.polyfit(years_to_num, population, 2)
+    p3 = np.polyfit(years_to_num, population, 3)
+
+    #print('The conversion rate is: ', p1[0])
     plt.plot(years_to_num,population,'o')
-    plt.plot(years_to_num, np.polyval(p1,years_to_num))
-    plt.show()
 
+    plt.plot(years_to_num, np.polyval(p1,years_to_num),'r-')
+    plt.plot(years_to_num, np.polyval(p2, years_to_num), 'b-')
+    plt.plot(years_to_num, np.polyval(p3, years_to_num), 'g-')
+
+    #after obeservation, p3 fit the graph most
+    #print(p3)
+
+    next_year_num = 20
+    line = np.poly1d(p3)
+    next_population = line(next_year_num)
+
+    print('Number of people living in households that shopped at Walmart Supercenter grocery stores \n within the last 7 days in the United States from spring 2008 to spring 2017 (in millions)',next_population)
     #print(population)
+    return next_population
 
-getConversionRate()
+NumberofPeopleShopWalmart()
+
+def NumberofHousehold():
+    """
+    This function will get how many Number of household in US.
+
+    :return:
+    """
 
 class Income():
     """

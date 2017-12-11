@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 import os.path
 from sklearn.metrics import mean_squared_error
+import requests
+from bs4 import BeautifulSoup
+import re
+from datetime import datetime,date
 
 class ConversionRate():
     def __init__(self,input_flie, next_x):
@@ -100,15 +104,12 @@ class ConversionRate():
         bestfit = list_mse.index(min_mse) + 1
         return bestfit, min_mse
 
-    def NumberofHouseholdShopWalmart(self):
+    def NextFigure(self):
 
         df, total_rows = self.ReadcsvTodf()
-        #df2, total_rows2 = ReadcsvTodf('test2.csv')
-        #print(df)
-        print(total_rows)
 
         x = np.arange(1,total_rows+1)
-
+        #print(x)
         y = np.array(df['Population'])
 
         p1, p2, p3 = self.FitCurve(x,y)
@@ -129,51 +130,192 @@ class ConversionRate():
     #NumberofHouseholdShopWalmart()
 
 
-a = ConversionRate('test.csv',20).NumberofHouseholdShopWalmart()
-print(a)
-b = ConversionRate('test_household.xlsx',48).NumberofHouseholdShopWalmart()
-print(b)
 
-def NumberofHousehold():
+
+def RateCalculation(a, b):
+
     """
-    This function will get how many Number of household in US.
 
-    :return:
+    :param a: number of total household(in millions) who shopped at Walmart in the last 7 days therefore
+    a divided by 7 equals to the number of household in one day
+    :param b: number of total household(in millions) in the nation
+    :return: the conversion rate through out the country
     """
-    df, total_rows = ConversionRate().ReadcsvTodf('test_household.xlsx')
-    #list_years = list(df.axes[0])
-    #total_rows = len(list_years)
-    #print(total_rows)
-
-    x = np.arange(1, total_rows + 1)
-
-    y = np.array(df['Household'])
-
-    p1, p2, p3 = ConversionRate().FitCurve(x, y)
-
-    bestfit, min_mse = ConversionRate().FindBestFit(x,y,p1,p2,p3)
-    print('The best fit is {} and the minimum mse is {}'.format(bestfit, min_mse))
-
-    next_x = 49
-    line = np.poly1d(p3)
-    next_y_household = line(next_x)
-    #print('In 2017 the number of household in US is(in millions): ',next_y_household)
-    #x = np.arange(1,total_rows+1)
-
-    return next_y_household
-#NumberofHousehold()
-
-def ConversionRate(a, b):
-
     rate = a/7/b
-    print(rate)
+    #print(rate)
 
     return rate
 
-def Customer():
 
-    c = np.random.poisson(1.03, 1000)
-    count,bins,ignored = plt.hist(c,9,normed = True)
-    plt.show()
+class Customer():
+    def __init__(self,lam,size):
+        self._lam = lam
+        self._size = size
+    def Customer_distribution(self):
 
+        c = np.random.poisson(self._lam,self._size)
+        #count,bins,ignored = plt.hist(c,9,normed = True)
+        return c
 #Customer()
+
+
+def DataFetch():
+    city_state = input("What is your city and state").split(',')
+    url = url = 'https://datausa.io/profile/geo/'+'{0}-{1}/'.format(city_state[0],city_state[1])
+    res = requests.get(url)
+    res = res.text.encode(res.encoding).decode('utf-8')
+
+
+
+
+    find_pop = re.findall(r'\S*(pop\&rank)\S*>(.*?)</span>',res)[0]
+    find_median_income = re.findall(r'\S*(income\&rank)\S*>(.*?)</span>',res)[0]
+
+    #print(find_pop[1])
+    population = find_pop[1].replace(',','')
+    population=int(population)
+    median_household_income = str(find_median_income[1]).strip('$').replace(',','')
+    median_household_income = int(median_household_income)
+    #print(median_household_income)
+    return population,median_household_income
+
+
+
+class overhead():
+    def __init__(self,rent,utility_bills,insurance,technology,marketing,salaries ):
+        self._rent = rent
+        self._utility_bills = utility_bills
+        self._insurance = insurance
+        self._technology = technology
+        self._marketing = marketing
+        self._salaries = salaries
+    @property
+    def rent(self):
+        """
+
+        :return:
+        """
+        return self.rent
+
+    @property
+    def utility_bills(self):
+        """
+
+        :return:
+        """
+        return self.utility_bills
+
+
+    @property
+    def insurance(self):
+        """
+
+        :return:
+        """
+        return self.insurance
+
+    @property
+    def technology(self):
+        """
+
+        :return:
+        """
+        return self.technology
+
+    @property
+    def marketing(self):
+        """
+
+        :return:
+        """
+        return self.marketing
+
+    @property
+    def salaries(self):
+        """
+
+        :return:
+        """
+        return self.salaries
+
+
+class profit_persale():
+    def __init__(self,size):
+        """
+
+        :param size:
+        :return:
+        """
+        self.size = size
+
+    def profit(self):
+        """
+
+        :return:
+        """
+        self.profit_random = np.random.uniform(0,500,self.size)
+        return self.profit_random
+
+class conversion_cost():
+    def __init__(self,mu,sigma,low,high):
+        self._mu = mu
+        self._sigma = sigma
+        self._low = low
+        self._high = high
+
+    def co_random(self):
+        x= np.random.normal(self._mu,self._sigma,100)
+        return x
+
+local_population, local_income = DataFetch()
+People_shopping = ConversionRate('test.csv',20).NextFigure()
+People_total = ConversionRate('test_household.xlsx',49).NextFigure()
+
+conversion_rate = RateCalculation(People_shopping,People_total).item()
+
+print('!!!',type(conversion_rate))
+
+
+dayOfWeek = datetime.now().weekday()
+US_Household_Income_median = 59039
+
+if local_income > US_Household_Income_median :
+    if dayOfWeek >4:
+        conversion_rate = conversion_rate * 1.5
+    else:
+        conversion_rate = conversion_rate * 1.2
+elif local_income<= US_Household_Income_median:
+    if dayOfWeek>4:
+        conversion_rate = conversion_rate * 1.1
+    else:
+        conversion_rate = conversion_rate * 0.8
+
+
+over = overhead(1,2,3,4,5,6)
+over._rent = 1
+over._utility_bills = 2
+over._insurance = 3
+over._technology = 4
+over._marketing = 5
+over._salaries =6
+profit_distribution = profit_persale(100).profit()
+con = conversion_cost(0.5,1.0,0.2,0.8)
+
+
+cust = Customer(local_population*conversion_rate,100).Customer_distribution()
+
+print(cust)
+expense = over._rent +over._utility_bills + over._insurance + over._technology + over._marketing +over._salaries
+
+print(type(local_population))
+print(type(conversion_rate))
+print(type(con.co_random()))
+
+ex1= con.co_random()
+print(ex1)
+
+print(profit_distribution)
+
+Income = cust * profit_distribution
+#DailyProfit = Income - expense-ex1
+print(Income)

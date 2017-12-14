@@ -59,6 +59,8 @@ class ConversionRate():
         this function is to get minimal squared error to figure out the best fit
         y_true and y_pred are arrays
         :return mean squared error
+        >>> ConversionRate.MSE([2,3,4,5],[3,4,5,6])
+        1
         """
         mse = mean_squared_error(y, y_pred)
 
@@ -140,6 +142,8 @@ def RateCalculation(a, b):
     a divided by 7 equals to the number of household in one day
     :param b: number of total household(in millions) in the nation
     :return: the conversion rate through out the country
+    >>> RateCalculation(700,1000)
+    0.1
     """
     rate = a/7/b
     #print(rate)
@@ -160,7 +164,7 @@ class Customer():
 
 
 def DataFetch():
-    city_state = input("What is your city and state").split(',')
+    city_state = input("What is your city and state: (example: urbana,il)").split(',')
     url = url = 'https://datausa.io/profile/geo/'+'{0}-{1}/'.format(city_state[0],city_state[1])
     res = requests.get(url)
     res = res.text.encode(res.encoding).decode('utf-8')
@@ -192,7 +196,7 @@ class overhead():
     @property
     def rent(self):
         """
-
+        input rent value
         :return:
         """
         return self.rent
@@ -200,7 +204,7 @@ class overhead():
     @property
     def utility_bills(self):
         """
-
+        input supermarket daily utility_bills
         :return:
         """
         return self.utility_bills
@@ -209,7 +213,7 @@ class overhead():
     @property
     def insurance(self):
         """
-
+        input supermarket insurance cost
         :return:
         """
         return self.insurance
@@ -217,7 +221,7 @@ class overhead():
     @property
     def technology(self):
         """
-
+        input supermarket daily technology cost
         :return:
         """
         return self.technology
@@ -225,7 +229,7 @@ class overhead():
     @property
     def marketing(self):
         """
-
+        input supermarket marketing cost
         :return:
         """
         return self.marketing
@@ -233,7 +237,7 @@ class overhead():
     @property
     def salaries(self):
         """
-
+        input supermarket salaries cost
         :return:
         """
         return self.salaries
@@ -242,7 +246,7 @@ class overhead():
 class profit_persale():
     def __init__(self,size):
         """
-
+        initialize profit_persale with distribution size
         :param size:
         :return:
         """
@@ -250,72 +254,97 @@ class profit_persale():
 
     def profit(self):
         """
-
+        Assume the profit_persale is uniform distribution
+        we set the minimum profit 10 and the maximun 200
         :return:
         """
-        self.profit_random = np.random.uniform(0,500,self.size)
+        self.profit_random = np.random.uniform(10,200,self.size)
         return self.profit_random
 
 class conversion_cost():
     def __init__(self,mu,sigma,low,high):
+        """
+        initialize conversion_cost class with mu,sigma,low,high
+        :param mu:
+        :param sigma:
+        :param low:
+        :param high:
+        """
         self._mu = mu
         self._sigma = sigma
         self._low = low
         self._high = high
 
-    def co_random(self):
+    def conversioncost_random(self):
+        """
+        Assume the conversion cost is normal distribution
+        :return:
+        """
         x= np.random.normal(self._mu,self._sigma,100)
         return x
 
-local_population, local_income = DataFetch()
-People_shopping = ConversionRate('test.csv',20).NextFigure()
-People_total = ConversionRate('test_household.xlsx',49).NextFigure()
+def ProfitDistribution(list_profit):
+    small_than_100000 = 0
+    between_100000_to_300000 = 0
+    between_300000_to_600000 = 0
+    larger_than_600000 = 0
+    len_profit = len(list_profit)
 
-conversion_rate = RateCalculation(People_shopping,People_total).item()
+    for i in list_profit:
+        if i < 100000:
+            small_than_100000 += 1
+        elif 100000 <= i <=300000:
+            between_100000_to_300000 += 1
+        elif 300000 <= i <=600000:
+            between_300000_to_600000 += 1
+        else:
+            larger_than_600000 += 1
+    print('The percentage of profit distribution:\n <10000: {0:.2f}% \n 10000~30000: {1:.2f}% \n 30000~60000:{2:.2f}% \n >60000 : {3:.2f}%'.format(small_than_100000/len_profit,between_100000_to_300000/len_profit,between_300000_to_600000/len_profit,larger_than_600000/len_profit))
 
-print('!!!',type(conversion_rate))
+def PicPlot(data):
+    """
+
+    :param data: data is the daily profit prediction.
+    :return:
+    """
+    plt.plot(data)
+    plt.title('Daily Profit Of Supermarket')
+    plt.ylabel('Profit Distribution')
+
+    plt.show()
+
+def main():
+    local_population, local_income = DataFetch() # get local pupulation, local income from website.
+    People_shopping = ConversionRate('test.csv',20).NextFigure()
+    People_total = ConversionRate('test_household.xlsx',49).NextFigure()
+    conversion_rate = RateCalculation(People_shopping,People_total).item()
+    US_Household_Income_median = 59039 #this is fetched online
+    dayOfWeek = datetime.now().weekday()  # show today date between 0~6 represent sunday to monday
+    if local_income > US_Household_Income_median : #if local income larger than average income in country
+        if dayOfWeek >4: #if in the weekend, the conversion rate will be bigger
+            conversion_rate = conversion_rate * 1.5
+        else: #else in the weekday
+            conversion_rate = conversion_rate * 1.2
+    elif local_income<= US_Household_Income_median:
+        if dayOfWeek>4:
+            conversion_rate = conversion_rate * 1.1
+        else:
+            conversion_rate = conversion_rate * 0.8
+
+    over = overhead(3000,200,300,400,500,6000) #set overhead value
+
+    profit_distribution = profit_persale(100).profit()# get profit_persale distribution
+    conversioncost = conversion_cost(0.5,1.0,0.2,0.8) # get conversioncost distribution
+    customerdistribution = Customer(local_population*conversion_rate,100).Customer_distribution() # get customer distributiuon
+    # expense = overhead + customer*conversion_cost
+    Expense = over._rent +over._utility_bills + over._insurance + over._technology + over._marketing +over._salaries+customerdistribution*conversioncost.conversioncost_random()
+    # Income = local_people*conversion_rate*profit_persale = customer * profit_persale
+    Income = customerdistribution * profit_distribution
+    DailyProfit = Income - Expense
+
+    ProfitDistribution(DailyProfit)
+
+    PicPlot(DailyProfit) #this function can plot
 
 
-dayOfWeek = datetime.now().weekday()
-US_Household_Income_median = 59039
-
-if local_income > US_Household_Income_median :
-    if dayOfWeek >4:
-        conversion_rate = conversion_rate * 1.5
-    else:
-        conversion_rate = conversion_rate * 1.2
-elif local_income<= US_Household_Income_median:
-    if dayOfWeek>4:
-        conversion_rate = conversion_rate * 1.1
-    else:
-        conversion_rate = conversion_rate * 0.8
-
-
-over = overhead(1,2,3,4,5,6)
-over._rent = 1
-over._utility_bills = 2
-over._insurance = 3
-over._technology = 4
-over._marketing = 5
-over._salaries =6
-profit_distribution = profit_persale(100).profit()
-con = conversion_cost(0.5,1.0,0.2,0.8)
-
-
-cust = Customer(local_population*conversion_rate,100).Customer_distribution()
-
-print(cust)
-expense = over._rent +over._utility_bills + over._insurance + over._technology + over._marketing +over._salaries
-
-print(type(local_population))
-print(type(conversion_rate))
-print(type(con.co_random()))
-
-ex1= con.co_random()
-print(ex1)
-
-print(profit_distribution)
-
-Income = cust * profit_distribution
-#DailyProfit = Income - expense-ex1
-print(Income)
+main()

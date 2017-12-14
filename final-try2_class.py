@@ -343,8 +343,8 @@ def BarchartPlot(list_profit):
 
 def main():
     local_population, local_income = DataFetch() # get local pupulation, local income from website.
-    People_shopping = ConversionRate('test.csv',20).NextFigure()
-    People_total = ConversionRate('test_household.xlsx',49).NextFigure()
+    People_shopping = ConversionRate('data_shoppers.csv',20).NextFigure() #the next x is 20,
+    People_total = ConversionRate('data_household.xlsx',49).NextFigure()
     conversion_rate = RateCalculation(People_shopping,People_total).item()
     US_Household_Income_median = 59039 #this is fetched online
     dayOfWeek = datetime.now().weekday()  # show today date between 0~6 represent sunday to monday
@@ -372,7 +372,7 @@ def main():
 
     perc1, perc2, perc3, perc4, perc5 = ProfitDistribution(DailyProfit)
     print('The percentage of profit distribution:\n <100000: {0:.2f}% \n 100000~300000: {1:.2f}% \n 300000~600000:{2:.2f}% \n 600000~900000 : {3:.2f}% \n >900000 : {4:.2f}%'.format(perc1, perc2, perc3, perc4, perc5))
-
+    print('A bar chart is created behind this screen!')
     BarchartPlot(DailyProfit)
 
 

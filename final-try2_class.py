@@ -4,9 +4,8 @@ import pandas as pd
 import os.path
 from sklearn.metrics import mean_squared_error
 import requests
-from bs4 import BeautifulSoup
 import re
-from datetime import datetime,date
+from datetime import datetime
 
 class ConversionRate():
     def __init__(self,input_flie, next_x):
@@ -44,7 +43,7 @@ class ConversionRate():
     @staticmethod
     def FitPlot(x,p,color='b-'):
         """
-        this function is to plot the fit line
+        this function is to plot the fit line, if you wish to see the linear regression line, you can employee this function.
         :return:
         """
         #plt.plot(x, y, 'o')
@@ -104,6 +103,7 @@ class ConversionRate():
         list_mse = [mse1, mse2, mse3]
         min_mse = min(list_mse)
         bestfit = list_mse.index(min_mse) + 1
+
         return bestfit, min_mse
 
     def NextFigure(self):
@@ -111,27 +111,18 @@ class ConversionRate():
         df, total_rows = self.ReadcsvTodf()
 
         x = np.arange(1,total_rows+1)
-        #print(x)
+
         y = np.array(df['Population'])
 
         p1, p2, p3 = self.FitCurve(x,y)
-        #print(p1,p2,p3)
+
 
         bestfit, min_mse = self.FindBestFit(x,y,p1,p2,p3)
 
-        #print('The best fit is {} and the minimum mse is {}'.format(bestfit, min_mse))
-
-        #next_x = 20
-        line = np.poly1d(p3)
+        line = np.poly1d(bestfit)
         next_y_shop = line(self.next_x)
 
-        #print('Number of households that shopped at Walmart Supercenter grocery stores \n within the last 7 days in the United States from spring 2008 to spring 2017 (in millions)',next_y_shop)
-        #print(population)
         return next_y_shop
-
-    #NumberofHouseholdShopWalmart()
-
-
 
 
 def RateCalculation(a, b):
@@ -157,9 +148,8 @@ class Customer():
         self._size = size
     def Customer_distribution(self):
 
-        c = np.random.poisson(self._lam,self._size)
-        #count,bins,ignored = plt.hist(c,9,normed = True)
-        return c
+        cust = np.random.poisson(self._lam,self._size)
+        return cust
 #Customer()
 
 
@@ -283,33 +273,71 @@ class conversion_cost():
         x= np.random.normal(self._mu,self._sigma,100)
         return x
 
+def PercentageCalculation(a,b):
+    """
+
+    :param a: divisor
+    :param b: dividende
+    :return: quotient
+    """
+    return a/b
+
 def ProfitDistribution(list_profit):
     small_than_100000 = 0
     between_100000_to_300000 = 0
     between_300000_to_600000 = 0
-    larger_than_600000 = 0
+    between_600000_to_900000 = 0
+    larger_than_900000 = 0
     len_profit = len(list_profit)
+    perc1 = 0
+    perc2 = 0
+    perc3 = 0
+    perc4 = 0
+    perc5 = 0
 
     for i in list_profit:
         if i < 100000:
             small_than_100000 += 1
+            perc1 = small_than_100000/len_profit
+
         elif 100000 <= i <=300000:
             between_100000_to_300000 += 1
-        elif 300000 <= i <=600000:
+            perc2 = between_100000_to_300000/len_profit
+
+        elif 300000 <= i <= 600000:
             between_300000_to_600000 += 1
+            perc3 = between_300000_to_600000/len_profit
+
+        elif 60000 <= i <= 900000:
+            between_600000_to_900000 += 1
+            perc4 = between_600000_to_900000/len_profit
+
         else:
-            larger_than_600000 += 1
-    print('The percentage of profit distribution:\n <10000: {0:.2f}% \n 10000~30000: {1:.2f}% \n 30000~60000:{2:.2f}% \n >60000 : {3:.2f}%'.format(small_than_100000/len_profit,between_100000_to_300000/len_profit,between_300000_to_600000/len_profit,larger_than_600000/len_profit))
+            larger_than_900000 += 1
+            perc5 = larger_than_900000/len_profit
 
-def PicPlot(data):
+    #print('The percentage of profit distribution:\n <100000: {0:.2f}% \n 100000~300000: {1:.2f}% \n 300000~600000:{2:.2f}% \n 600000~900000 : {3:.2f}% \n >900000 : {4:.2f}%'.format(perc1,perc2,perc3,perc4,perc5))
+
+    return perc1,perc2,perc3,perc4,perc5
+
+def BarchartPlot(list_profit):
     """
 
-    :param data: data is the daily profit prediction.
-    :return:
+    :param data: the percentage of daily profit prediction and are fetched from ProfitDistribution()
+    :return: a bar chart
     """
-    plt.plot(data)
-    plt.title('Daily Profit Of Supermarket')
-    plt.ylabel('Profit Distribution')
+
+    objects = ('<100', '100~300', '300~600', '600~900', '>900')
+    y_pos = np.arange(len(objects))
+    perc1, perc2, perc3, perc4, perc5 = ProfitDistribution(list_profit)
+
+    percentage = [perc1, perc2, perc3, perc4, perc5]
+
+    plt.bar(y_pos, percentage, align='center', alpha=0.5, width = 0.5)
+    plt.xticks(y_pos, objects)
+    plt.ylabel('Percentage')
+    plt.xlabel('Daily Profit (in thousands)')
+    plt.title('Daily Profit Prediction Distribution')
 
     plt.show()
 
@@ -342,9 +370,10 @@ def main():
     Income = customerdistribution * profit_distribution
     DailyProfit = Income - Expense
 
-    ProfitDistribution(DailyProfit)
+    perc1, perc2, perc3, perc4, perc5 = ProfitDistribution(DailyProfit)
+    print('The percentage of profit distribution:\n <100000: {0:.2f}% \n 100000~300000: {1:.2f}% \n 300000~600000:{2:.2f}% \n 600000~900000 : {3:.2f}% \n >900000 : {4:.2f}%'.format(perc1, perc2, perc3, perc4, perc5))
 
-    PicPlot(DailyProfit) #this function can plot
+    BarchartPlot(DailyProfit)
 
 
 main()

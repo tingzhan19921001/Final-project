@@ -60,6 +60,6 @@ https://www.vertex42.com/ExcelArticles/mc/SalesForecast.html
 How many households shop at Walmart.
 https://www.statista.com/statistics/228432/people-in-household-that-shopped-at-walmart-supercenter-within-the-last-7-days-usa/
 
-Frequency of shopping at Walmart.com according to internet users in the United States as of August 2017, by age group
-https://www.statista.com/statistics/748601/walmartcom-us-shopping-frequency-by-age/
+Number of households in the U.S. from 1960 to 2016 (in millions)
+https://www.statista.com/statistics/183635/number-of-households-in-the-us/
 

@@ -73,7 +73,9 @@ class ConversionRate():
         y_true and y_pred are arrays
         :return mean squared error
         >>> ConversionRate.MSE([2,3,4,5],[3,4,5,6])
-        1
+        1.0
+        >>> ConversionRate.MSE(np.arange(1,10),np.arange(15,24))
+        196.0
         """
         mse = mean_squared_error(y, y_pred) # both y and y_pred are arrays
 
@@ -86,6 +88,7 @@ class ConversionRate():
         :param x: the x are the x-axis from the data, normally they are years
         :param y: the actual value in that year. All from the data file downloaded online
         :return:
+
         """
 
         p1 = self.RegressionFit(x, y, 1)
@@ -180,6 +183,8 @@ def RateCalculation(a, b):
     :return: the conversion rate through out the country
     >>> RateCalculation(700,1000)
     0.1
+    >>> RateCalculation(2100,6000)
+    0.05
     """
     rate = a/7/b
 
@@ -208,20 +213,37 @@ def DataFetch():
     :return: this function is to fetch from online the real data of population and household income.
     We believe that the median household income and the weekday vs non-weekday will influence the conversion rate
     """
-    city_state = input("What is your city and state: (example: urbana,il)").split(',')
-    # tell me where you are
-    url = 'https://datausa.io/profile/geo/'+'{0}-{1}/'.format(city_state[0],city_state[1])
-    # generate the url to for the input location
+    while True:
+        """
+        this while true step is added to prevent input error.
+        For example, if users input urbana, ny, and we actually dont have a city named urbana
+        in new york state. therefore, the program will ask you to re enter your location and 
+        
+        """
+        try:
+            city_state = input("What is your city and state: (example: urbana,il)").split(',')
+            # tell me where you are
 
-    res = requests.get(url)
+            url = 'https://datausa.io/profile/geo/'+'{0}-{1}/'.format(city_state[0],city_state[1])
+            # generate the url to for the input location
 
-    res = res.text.encode(res.encoding).decode('utf-8')
+            res = requests.get(url)
 
-    find_pop = re.findall(r'\S*(pop\&rank)\S*>(.*?)</span>',res)[0]
-    #to fetch the population value
+            res = res.text.encode(res.encoding).decode('utf-8')
 
-    find_median_income = re.findall(r'\S*(income\&rank)\S*>(.*?)</span>',res)[0]
-    #to fetch the median household income
+            find_pop = re.findall(r'\S*(pop\&rank)\S*>(.*?)</span>',res)[0]
+            #to fetch the population value
+
+            find_median_income = re.findall(r'\S*(income\&rank)\S*>(.*?)</span>',res)[0]
+            #to fetch the median household income
+
+            break
+
+
+        except IndexError:
+            print('The city or state is not recognized, please re-enter.')
+            continue
+
 
     population = find_pop[1].replace(',','') # change the datatype
     population=int(population)
@@ -441,6 +463,7 @@ def main():
     DailyProfit = Income - Expense
 
     perc1, perc2, perc3, perc4, perc5 = ProfitDistribution(DailyProfit)
+
     print('The percentage of profit distribution:\n <100000: {0:.2f}% \n 100000~300000: {1:.2f}% \n 300000~500000:{2:.2f}% \n 500000~700000 : {3:.2f}% \n >700000 : {4:.2f}%'.format(perc1, perc2, perc3, perc4, perc5))
     print('A bar chart is created behind this screen!')
     BarchartPlot(DailyProfit) # if you do not wish to see the bar chart, you can comment this line
